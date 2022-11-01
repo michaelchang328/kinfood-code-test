@@ -2,7 +2,7 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
 export enum Role {
   normal_user = 'normal_user',
-  admin = 'admin',
+  editor = 'editor',
   super_admin = 'super_admin',
 }
 

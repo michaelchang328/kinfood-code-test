@@ -9,4 +9,7 @@ export class Admin extends BaseEntity {
 
   @Property()
   encryptedPassword!: string;
+
+  @Property()
+  role!: string;
 }
