@@ -3,7 +3,7 @@ import { Migration } from '@mikro-orm/migrations';
 export class Migration20221101144654 extends Migration {
   async up(): Promise<void> {
     this.addSql(
-      'create table "admin" ("id" varchar(255) not null, "created_at" jsonb not null, "updated_at" jsonb not null, "username" varchar(255) not null, "encrypted_password" varchar(255) not null, "role" varchar(255) not null, constraint "admin_pkey" primary key ("id"));',
+      'create table "admin" ("id" varchar(255) not null, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "username" varchar(255) not null, "encrypted_password" varchar(255) not null, "role" varchar(255) not null, constraint "admin_pkey" primary key ("id"));',
     );
     this.addSql(
       'alter table "admin" add constraint "admin_username_unique" unique ("username");',

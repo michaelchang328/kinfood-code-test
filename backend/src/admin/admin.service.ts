@@ -43,27 +43,6 @@ export class AdminService {
     });
   }
 
-  async validateAdmin(loginAdminDto: LoginAdminDto) {
-    const admin = await this.findByUsername(loginAdminDto.username);
-    if (
-      admin &&
-      (await bcrypt.compare(loginAdminDto.password, admin.encryptedPassword))
-    ) {
-      return admin;
-    }
-    return null;
-  }
-
-  async loginAdmin(admin: Admin) {
-    const payload = {
-      id: admin.id,
-      role: admin.role,
-    };
-    return {
-      accessToken: this.jwtService.sign(payload),
-    };
-  }
-
   async getAdmins() {
     return await this.adminRepository.findAll();
   }
