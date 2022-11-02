@@ -6,7 +6,7 @@ export enum Role {
   super_admin = 'super_admin',
 }
 
-export interface IUser {
+export interface IIdentity {
   user_id: string;
   role: Role;
 }
@@ -14,6 +14,6 @@ export interface IUser {
 export const User = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
-    return request.user as IUser;
+    return request.user as IIdentity;
   },
 );

@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';
 import { Public } from '../auth/public.guard';
-import { IUser, Role, User } from '../auth/user.decorator';
+import { IIdentity, Role, User } from '../auth/user.decorator';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/createAdmin.dto';
 import { LoginAdminDto } from './dto/LoginAdmin.dto';
@@ -23,7 +23,7 @@ export class AdminController {
 
   @Post('create')
   async createAdmin(
-    @User() user: IUser,
+    @User() user: IIdentity,
     @Body() createAdminDto: CreateAdminDto,
   ) {
     try {
@@ -41,7 +41,6 @@ export class AdminController {
           'Super admin can only be created by super admin.',
         );
       }
-
       return await this.adminService.createAdmin(createAdminDto);
     } catch (e) {
       throw new HttpException(
@@ -66,7 +65,6 @@ export class AdminController {
   @Public()
   @Post('login')
   async loginAdmin(@Body() loginAdminDto: LoginAdminDto) {
-    console.log('loginAdminDto: ', loginAdminDto);
     const admin = await this.validateAdmin(loginAdminDto);
     if (!admin) {
       throw new HttpException('Admin not found', HttpStatus.NOT_FOUND);
@@ -75,7 +73,7 @@ export class AdminController {
   }
 
   @Get()
-  async getAdmins(@User() user: IUser) {
+  async getAdmins(@User() user: IIdentity) {
     if (user.role === Role.normal_user) {
       throw new UnauthorizedException('Only admins are allowed.');
     }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Admin } from '../admin/entities/admin.entity';
 
@@ -11,6 +11,7 @@ export class AuthService {
       role: admin.role,
     };
     return {
+      status: HttpStatus.OK,
       accessToken: this.jwtService.sign(payload, {
         secret: process.env.JWT_SECRET,
       }),

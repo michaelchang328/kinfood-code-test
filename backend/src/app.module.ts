@@ -7,6 +7,8 @@ import { AdminModule } from './admin/admin.module';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthModule } from './auth/auth.module';
+import { StoreModule } from './store/store.module';
+import { PetModule } from './pet/pet.module';
 
 @Module({
   imports: [
@@ -14,6 +16,8 @@ import { AuthModule } from './auth/auth.module';
     MikroOrmModule.forRoot(),
     AdminModule,
     AuthModule,
+    StoreModule,
+    PetModule,
   ],
   controllers: [AppController],
   providers: [

@@ -4,15 +4,12 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateAdminDto } from './dto/createAdmin.dto';
 import { Admin } from './entities/admin.entity';
 import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
-import { LoginAdminDto } from './dto/LoginAdmin.dto';
 
 @Injectable()
 export class AdminService {
   constructor(
     @InjectRepository(Admin)
     private readonly adminRepository: EntityRepository<Admin>,
-    private readonly jwtService: JwtService,
   ) {}
   async createAdmin(createAdminDto: CreateAdminDto) {
     try {
@@ -23,7 +20,6 @@ export class AdminService {
         createAdminDto.encryptedPassword,
         10,
       );
-
       await this.adminRepository.persistAndFlush(admin);
       return {
         status: HttpStatus.OK,
