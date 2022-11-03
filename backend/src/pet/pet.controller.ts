@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Get,
   HttpStatus,
+  Param,
   Post,
   Put,
   UnauthorizedException,
@@ -14,6 +16,7 @@ import { IIdentity, Role, User } from '../auth/user.decorator';
 import { CreatePetDto } from './dto/createPet.dto';
 import { PetService } from './pet.service';
 import { EditPetDto } from './dto/editPet.dto';
+import { Public } from '../auth/public.guard';
 
 @Controller('pet')
 export class PetController {
@@ -82,5 +85,11 @@ export class PetController {
       status: HttpStatus.OK,
       message: 'Pet has been edited successfully.',
     };
+  }
+
+  @Public()
+  @Get(':id')
+  async getPetById(@Param('id') id: string) {
+    return await this.petService.getPetById(id);
   }
 }

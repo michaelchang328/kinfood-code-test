@@ -125,4 +125,17 @@ export class PetService {
       throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
     }
   }
+
+  async getPetById(id: string) {
+    try {
+      return await this.petRepository.findOneOrFail(
+        { id: id },
+        {
+          populate: ['store', 'categories', 'pet_images'],
+        },
+      );
+    } catch (e) {
+      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
+    }
+  }
 }
