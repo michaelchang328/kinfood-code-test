@@ -6,6 +6,7 @@ import { CreatePetDto } from './dto/createPet.dto';
 import { Pet } from './entities/pet.entity';
 import { Image } from '../s3/entities/image.entity';
 import { InjectRepository } from '@mikro-orm/nestjs';
+import { EditPetDto } from './dto/editPet.dto';
 
 @Injectable()
 export class PetService {
@@ -16,6 +17,8 @@ export class PetService {
     private readonly storeRepository: EntityRepository<Store>,
     @InjectRepository(Category)
     private readonly categoryRepository: EntityRepository<Category>,
+    @InjectRepository(Image)
+    private readonly imageRepository: EntityRepository<Image>,
   ) {}
 
   async createPet(createPetDto: CreatePetDto) {
@@ -33,7 +36,6 @@ export class PetService {
           const category = await this.categoryRepository.findOne({
             id: category_id,
           });
-          console.log('category: ', category)
           pet.categories.add(category);
         }
       }
@@ -50,6 +52,74 @@ export class PetService {
           pet.pet_images.add(newImage);
         }
       }
+      await this.petRepository.persistAndFlush(pet);
+    } catch (e) {
+      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async editPet(editPetDto: EditPetDto) {
+    try {
+      const pet = await this.petRepository.findOneOrFail(
+        { id: editPetDto.id },
+        {
+          populate: ['store', 'categories', 'pet_images'],
+        },
+      );
+      pet.age = editPetDto.age;
+      pet.breed = editPetDto.breed;
+      pet.weight = editPetDto.weight;
+      pet.colour = editPetDto.colour;
+      pet.name = editPetDto.name;
+      pet.description = editPetDto.description;
+
+      let removeImages: string[] = [];
+      if (editPetDto.removeImages) {
+        removeImages = JSON.parse(editPetDto.removeImages);
+      }
+      let removeCategories: string[] = [];
+      if (editPetDto.removeImages) {
+        removeCategories = JSON.parse(editPetDto.removeCategories);
+      }
+
+      if (editPetDto.categories && editPetDto.categories.length) {
+        for (const category_id of editPetDto.categories) {
+          const category = await this.categoryRepository.findOne({
+            id: category_id,
+          });
+          pet.categories.add(category);
+        }
+      }
+      if (removeCategories.length) {
+        for (const category_id of removeCategories) {
+          const removedCategory = await this.categoryRepository.findOne({
+            id: category_id,
+          });
+          pet.categories.remove(removedCategory);
+        }
+      }
+      const store = await this.storeRepository.findOneOrFail({
+        id: editPetDto.store_id,
+      });
+      pet.store = store;
+
+      if (editPetDto.images && editPetDto.images.length) {
+        for (const imageUrl of editPetDto.images) {
+          const newImage = new Image();
+          newImage.url = imageUrl;
+          newImage.pet = pet;
+          pet.pet_images.add(newImage);
+        }
+      }
+      if (removeImages.length) {
+        for (const imageId of removeImages) {
+          const removeImage = await this.imageRepository.findOneOrFail({
+            id: imageId,
+          });
+          pet.pet_images.remove(removeImage);
+        }
+      }
+
       await this.petRepository.persistAndFlush(pet);
     } catch (e) {
       throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
