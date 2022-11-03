@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
   Post,
+  Put,
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';
@@ -14,6 +15,7 @@ import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/createAdmin.dto';
 import { LoginAdminDto } from './dto/LoginAdmin.dto';
 import * as bcrypt from 'bcrypt';
+import { EditAdminDto } from './dto/editAdmin.dto';
 @Controller('admin')
 export class AdminController {
   constructor(
@@ -79,5 +81,14 @@ export class AdminController {
     }
 
     return await this.adminService.getAdmins();
+  }
+
+  @Put()
+  async editAdmin(@User() user: IIdentity, @Body() editAdminDto: EditAdminDto) {
+    if (user.role === Role.normal_user || user.role === Role.editor) {
+      throw new UnauthorizedException('Only superadmins are allowed.');
+    }
+
+    return await this.adminService.editAdmin(editAdminDto);
   }
 }

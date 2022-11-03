@@ -4,6 +4,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateAdminDto } from './dto/createAdmin.dto';
 import { Admin } from './entities/admin.entity';
 import * as bcrypt from 'bcrypt';
+import { EditAdminDto } from './dto/editAdmin.dto';
 
 @Injectable()
 export class AdminService {
@@ -41,5 +42,29 @@ export class AdminService {
 
   async getAdmins() {
     return await this.adminRepository.findAll();
+  }
+
+  async editAdmin(editAdminDto: EditAdminDto) {
+    try {
+      const admin = await this.adminRepository.findOneOrFail({
+        id: editAdminDto.id,
+      });
+      admin.username = editAdminDto.username;
+      admin.role = editAdminDto.role;
+      admin.encryptedPassword = await bcrypt.hash(
+        editAdminDto.encryptedPassword,
+        10,
+      );
+      await this.adminRepository.persistAndFlush(admin);
+      return {
+        status: HttpStatus.OK,
+        message: 'Admin has been edited successfully.',
+      };
+    } catch (e) {
+      throw new HttpException(
+        'Something went wrong, pleace contact us.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 }
