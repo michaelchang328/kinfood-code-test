@@ -70,11 +70,8 @@ export class CategoryService {
     return await this.categoryRepository.removeAndFlush({ id: id });
   }
 
-  async getAll(userId?: string) {
+  async getAll() {
     try {
-      if (userId) {
-        // return user preferences
-      }
       return await this.categoryRepository.findAll();
     } catch (e) {
       throw new HttpException(e.message, HttpStatus.BAD_REQUEST);

@@ -98,9 +98,9 @@ export class CategoryController {
   }
 
   @Public()
-  @Get('?/')
-  async getAllCategories(@Query('userId') userId: string) {
-    return await this.categoryService.getAll(userId);
+  @Get()
+  async getAllCategories() {
+    return await this.categoryService.getAll();
   }
 
   @Public()

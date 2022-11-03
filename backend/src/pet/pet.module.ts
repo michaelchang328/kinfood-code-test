@@ -7,10 +7,12 @@ import { PetService } from './pet.service';
 import { Store } from '../store/entities/store.entity';
 import { Image } from '../s3/entities/image.entity';
 import { Category } from '../category/entities/category.entity';
+import { User } from '../user/entities/user.entity';
+import { CategoryService } from '../category/category.service';
 
 @Module({
-  imports: [MikroOrmModule.forFeature([Pet, Store, Image, Category])],
+  imports: [MikroOrmModule.forFeature([Pet, Store, Image, Category, User])],
   controllers: [PetController],
-  providers: [PetService, S3Service],
+  providers: [PetService, S3Service, CategoryService],
 })
 export class PetModule {}

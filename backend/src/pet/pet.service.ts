@@ -7,6 +7,8 @@ import { Pet } from './entities/pet.entity';
 import { Image } from '../s3/entities/image.entity';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EditPetDto } from './dto/editPet.dto';
+import { User } from '../user/entities/user.entity';
+import { CategoryService } from '../category/category.service';
 
 @Injectable()
 export class PetService {
@@ -19,6 +21,9 @@ export class PetService {
     private readonly categoryRepository: EntityRepository<Category>,
     @InjectRepository(Image)
     private readonly imageRepository: EntityRepository<Image>,
+    @InjectRepository(User)
+    private readonly userRepository: EntityRepository<User>,
+    private readonly categoryService: CategoryService,
   ) {}
 
   async createPet(createPetDto: CreatePetDto) {
@@ -134,6 +139,30 @@ export class PetService {
           populate: ['store', 'categories', 'pet_images'],
         },
       );
+    } catch (e) {
+      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async getPetsByPreference(userId: string) {
+    try {
+      const user = await this.userRepository.findOneOrFail(
+        { id: userId },
+        { populate: ['preferences'] },
+      );
+      let finalResult: Pet[] = [];
+      if (user.preferences.length > 0) {
+        for (const preference of user.preferences) {
+          const pets = await this.categoryService.getPetByCategory(
+            preference.id,
+          );
+
+          for (const pet of pets[0].pets) {
+            finalResult.push(pet);
+          }
+        }
+        return finalResult;
+      }
     } catch (e) {
       throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
     }

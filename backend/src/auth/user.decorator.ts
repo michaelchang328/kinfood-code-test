@@ -7,7 +7,7 @@ export enum Role {
 }
 
 export interface IIdentity {
-  user_id: string;
+  id: string;
   role: Role;
 }
 

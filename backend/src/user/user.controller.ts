@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Put,
   Query,
   UnauthorizedException,
   UploadedFiles,
@@ -21,6 +22,7 @@ import { LoginUserDto } from './dto/loginUser.dto';
 import { UserService } from './user.service';
 import * as bcrypt from 'bcrypt';
 import { AuthService } from '../auth/auth.service';
+import { UpdateUserDto } from './dto/updateUser.dto';
 
 @Controller('user')
 export class UserController {
@@ -54,5 +56,18 @@ export class UserController {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
     return await this.authService.loginUser(user);
+  }
+
+  @Put('update')
+  async updateUser(
+    @User() user: IIdentity,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    if (user.role !== Role.normal_user) {
+      throw new UnauthorizedException(
+        'Only user can update herself / himself.',
+      );
+    }
+    return await this.userService.updateUserById(updateUserDto);
   }
 }

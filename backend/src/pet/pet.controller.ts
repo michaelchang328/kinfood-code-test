@@ -87,6 +87,11 @@ export class PetController {
     };
   }
 
+  @Get('preferences')
+  async getPetsByPreference(@User() user: IIdentity) {
+    return await this.petService.getPetsByPreference(user.id);
+  }
+
   @Public()
   @Get(':id')
   async getPetById(@Param('id') id: string) {
