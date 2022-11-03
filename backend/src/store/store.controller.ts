@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Put,
   Query,
   UnauthorizedException,
   UploadedFiles,
@@ -16,6 +17,7 @@ import { Public } from '../auth/public.guard';
 import { IIdentity, Role, User } from '../auth/user.decorator';
 import { S3Service } from '../s3/s3.service';
 import { CreateStoreDto } from './dto/createStore.dto';
+import { EditStoreDto } from './dto/editStore.dto';
 import { StoreService } from './store.service';
 
 @Controller('store')
@@ -69,7 +71,31 @@ export class StoreController {
   @Public()
   @Get(':id')
   async getPetByStoreId(@Param('id') id: string) {
-    console.log('id: ', id);
     return await this.storeService.getPetByStoreId(id);
+  }
+
+  @Put('edit')
+  @UseInterceptors(FilesInterceptor('store_images'))
+  async editStoreById(
+    @User() user: IIdentity,
+    @Body() editStoreto: EditStoreDto,
+    @UploadedFiles() store_images?: Array<Express.Multer.File>,
+  ) {
+    if (user.role === Role.normal_user) {
+      throw new UnauthorizedException('User is not allowed to edit any pet.');
+    }
+    let images: string[] = [];
+    if (store_images) {
+      for (const store_image of store_images) {
+        const storeImageUrl = await this.s3Service.upload(store_image);
+        images.push(storeImageUrl.Location);
+      }
+    }
+
+    return await this.storeService.editStoreById({
+      ...editStoreto,
+      pets: editStoreto.pets ? JSON.parse(editStoreto.pets) : null,
+      store_images: images,
+    });
   }
 }

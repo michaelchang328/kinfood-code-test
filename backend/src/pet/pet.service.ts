@@ -58,6 +58,11 @@ export class PetService {
         }
       }
       await this.petRepository.persistAndFlush(pet);
+
+      return {
+        status: HttpStatus.OK,
+        message: 'Pet has been updated successfully.',
+      };
     } catch (e) {
       throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
     }

@@ -5,9 +5,10 @@ import { Store } from './entities/store.entity';
 import { StoreController } from './store.controller';
 import { StoreService } from './store.service';
 import { Image } from '../s3/entities/image.entity';
+import { Pet } from '../pet/entities/pet.entity';
 
 @Module({
-  imports: [MikroOrmModule.forFeature([Store, Image])],
+  imports: [MikroOrmModule.forFeature([Store, Image, Pet])],
   controllers: [StoreController],
   providers: [StoreService, S3Service],
 })

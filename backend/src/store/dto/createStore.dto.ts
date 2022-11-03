@@ -14,4 +14,6 @@ export class CreateStoreDto {
   latitude: string;
 
   store_images?: string[];
+
+  pets?: string;
 }

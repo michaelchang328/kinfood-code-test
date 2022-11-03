@@ -7,6 +7,8 @@ import { CreateStoreDto } from './dto/createStore.dto';
 import { GetStoresDto } from './dto/getStores.dto';
 import { Store } from './entities/store.entity';
 import { getDistance } from 'geolib';
+import { EditStoreDto } from './dto/editStore.dto';
+import { Pet } from '../pet/entities/pet.entity';
 
 interface SortedStores extends Store {
   distance: number;
@@ -17,6 +19,8 @@ export class StoreService {
   constructor(
     @InjectRepository(Store)
     private readonly storeRepository: EntityRepository<Store>,
+    @InjectRepository(Pet)
+    private readonly petRepository: EntityRepository<Pet>,
     @InjectRepository(Image)
     private readonly imageRepository: EntityRepository<Image>,
   ) {}
@@ -28,6 +32,19 @@ export class StoreService {
       store.description = createStoreDto.description;
       store.latitude = createStoreDto.latitude;
       store.longitude = createStoreDto.longitude;
+
+      let pets: string[] = [];
+      if (createStoreDto.pets) {
+        pets = JSON.parse(createStoreDto.pets);
+      }
+
+      if (createStoreDto.pets && createStoreDto.pets.length) {
+        for (const petId of pets) {
+          const pet = await this.petRepository.findOne({ id: petId });
+          store.pets.add(pet);
+        }
+      }
+
       await this.storeRepository.persistAndFlush(store);
       if (createStoreDto.store_images) {
         for (let imageUrl of createStoreDto.store_images) {
@@ -35,7 +52,6 @@ export class StoreService {
           newImage.url = imageUrl;
           newImage.store = store;
           store.store_images.add(newImage);
-          //   await this.imageRepository.persistAndFlush(newImage);
         }
       }
       return { status: HttpStatus.OK, store: store };
@@ -78,6 +94,51 @@ export class StoreService {
           populate: ['pets'],
         },
       );
+    } catch (e) {
+      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async editStoreById(editStoreDto: EditStoreDto) {
+    try {
+      const store = await this.storeRepository.findOneOrFail({
+        id: editStoreDto.id,
+      });
+      store.store_name = editStoreDto.store_name;
+      store.description = editStoreDto.description;
+      store.latitude = editStoreDto.latitude;
+      store.longitude = editStoreDto.longitude;
+
+      let removeImages: string[] = [];
+      if (editStoreDto.removeImages) {
+        removeImages = JSON.parse(editStoreDto.removeImages);
+      }
+      let removePets: string[] = [];
+      if (editStoreDto.removeImages) {
+        removePets = JSON.parse(editStoreDto.removePets);
+      }
+
+      if (editStoreDto.pets && editStoreDto.pets.length) {
+        for (const petId of editStoreDto.pets) {
+          const pet = await this.petRepository.findOne({
+            id: petId,
+          });
+          store.pets.add(pet);
+        }
+      }
+      if (removeImages.length) {
+        for (const imageId of removeImages) {
+          const removeImage = await this.imageRepository.findOneOrFail({
+            id: imageId,
+          });
+          store.store_images.remove(removeImage);
+        }
+      }
+      await this.storeRepository.persistAndFlush(store);
+      return {
+        status: HttpStatus.OK,
+        message: 'Store has been updated successfully.',
+      };
     } catch (e) {
       throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
     }
