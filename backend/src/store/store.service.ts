@@ -30,11 +30,12 @@ export class StoreService {
       store.longitude = createStoreDto.longitude;
       await this.storeRepository.persistAndFlush(store);
       if (createStoreDto.store_images) {
-        for (let image of createStoreDto.store_images) {
+        for (let imageUrl of createStoreDto.store_images) {
           const newImage = new Image();
-          newImage.url = image;
+          newImage.url = imageUrl;
           newImage.store = store;
-          await this.imageRepository.persistAndFlush(newImage);
+          store.store_images.add(newImage);
+          //   await this.imageRepository.persistAndFlush(newImage);
         }
       }
       return { status: HttpStatus.OK, store: store };

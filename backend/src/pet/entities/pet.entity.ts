@@ -1,6 +1,7 @@
 import {
   Collection,
   Entity,
+  FloatType,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -17,7 +18,7 @@ export class Pet extends BaseEntity {
   breed!: string;
 
   @Property()
-  weight!: number;
+  weight!: FloatType;
 
   @Property()
   colour!: string;
