@@ -5,10 +5,11 @@ import { Pet } from './pet/entities/pet.entity';
 import { Image } from './s3/entities/image.entity';
 import { Store } from './store/entities/store.entity';
 import { Category } from './category/entities/category.entity';
+import { User } from './user/entities/user.entity';
 
 const logger = new Logger('MikroORM');
 const config = {
-  entities: [Admin, Pet, Image, Store, Category],
+  entities: [Admin, Pet, Image, Store, Category, User],
   dbName: process.env.POSTGRES_DB,
   user: process.env.POSTGRES_USER,
   password: process.env.POSTGRES_PASSWORD,

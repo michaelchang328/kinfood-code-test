@@ -3,12 +3,14 @@ import {
   Collection,
   Entity,
   ManyToMany,
+  ManyToOne,
   OneToOne,
   Property,
   Unique,
 } from '@mikro-orm/core';
 import { Pet } from '../../pet/entities/pet.entity';
 import { Image } from '../../s3/entities/image.entity';
+import { User } from '../../user/entities/user.entity';
 
 @Entity({ tableName: 'category' })
 export class Category extends BaseEntity {
@@ -24,4 +26,7 @@ export class Category extends BaseEntity {
     orphanRemoval: true,
   })
   image: Image;
+
+  @ManyToOne({ nullable: true })
+  user?: User;
 }

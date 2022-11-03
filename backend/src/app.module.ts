@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { StoreModule } from './store/store.module';
 import { PetModule } from './pet/pet.module';
 import { CategoryModule } from './category/category.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { CategoryModule } from './category/category.module';
     StoreModule,
     PetModule,
     CategoryModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [
