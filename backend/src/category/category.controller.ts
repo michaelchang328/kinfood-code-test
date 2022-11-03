@@ -5,6 +5,7 @@ import {
   Get,
   HttpException,
   HttpStatus,
+  Param,
   Post,
   Put,
   Query,
@@ -100,5 +101,11 @@ export class CategoryController {
   @Get('?/')
   async getAllCategories(@Query('userId') userId: string) {
     return await this.categoryService.getAll(userId);
+  }
+
+  @Public()
+  @Get(':id')
+  async getPetByCategoryId(@Param('id') id: string) {
+    return await this.categoryService.getPetByCategory(id);
   }
 }

@@ -80,4 +80,17 @@ export class CategoryService {
       throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
     }
   }
+
+  async getPetByCategory(id: string) {
+    try {
+      return await this.categoryRepository.find(
+        { id: id },
+        {
+          populate: ['pets'],
+        },
+      );
+    } catch (e) {
+      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
+    }
+  }
 }
