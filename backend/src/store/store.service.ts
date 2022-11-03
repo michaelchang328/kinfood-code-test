@@ -69,4 +69,17 @@ export class StoreService {
     }
     return stores;
   }
+
+  async getPetByStoreId(id: string) {
+    try {
+      return await this.storeRepository.find(
+        { id: id },
+        {
+          populate: ['pets'],
+        },
+      );
+    } catch (e) {
+      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
+    }
+  }
 }

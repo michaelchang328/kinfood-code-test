@@ -4,6 +4,7 @@ import {
   Get,
   HttpException,
   HttpStatus,
+  Param,
   Post,
   Query,
   UnauthorizedException,
@@ -63,5 +64,12 @@ export class StoreController {
       latitude: latitude,
       longitude: longitude,
     });
+  }
+
+  @Public()
+  @Get(':id')
+  async getPetByStoreId(@Param('id') id: string) {
+    console.log('id: ', id);
+    return await this.storeService.getPetByStoreId(id);
   }
 }
