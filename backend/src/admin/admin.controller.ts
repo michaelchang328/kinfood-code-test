@@ -89,6 +89,6 @@ export class AdminController {
       throw new UnauthorizedException('Only superadmins are allowed.');
     }
 
-    return await this.adminService.editAdmin(editAdminDto);
+    return await this.adminService.editAdminById(editAdminDto);
   }
 }

@@ -44,7 +44,7 @@ export class AdminService {
     return await this.adminRepository.findAll();
   }
 
-  async editAdmin(editAdminDto: EditAdminDto) {
+  async editAdminById(editAdminDto: EditAdminDto) {
     try {
       const admin = await this.adminRepository.findOneOrFail({
         id: editAdminDto.id,
