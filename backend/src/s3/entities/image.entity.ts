@@ -1,7 +1,8 @@
-import { Entity, ManyToOne, Property } from '@mikro-orm/core';
+import { Entity, ManyToOne, OneToOne, Property } from '@mikro-orm/core';
 import { Pet } from '../../pet/entities/pet.entity';
 import { Store } from '../../store/entities/store.entity';
 import { BaseEntity } from '../../entities/baseEntity.entity';
+import { Category } from '../../category/entities/category.entity';
 
 @Entity({ tableName: 'image' })
 export class Image extends BaseEntity {
@@ -13,4 +14,7 @@ export class Image extends BaseEntity {
 
   @ManyToOne({ entity: () => Pet, fieldName: 'pet_id', nullable: true })
   pet?: Pet;
+
+  @OneToOne(() => Category, (category) => category.image)
+  category?: Category;
 }

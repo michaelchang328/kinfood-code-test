@@ -59,7 +59,7 @@ export class StoreService {
             longitude: store.longitude,
           },
         );
-        sortedStores.push({ ...store, distance: distance });
+        sortedStores.push({ ...store, distance: distance / 1000 });
       }
 
       return sortedStores.sort((a, b) => {

@@ -1,12 +1,27 @@
 import { BaseEntity } from '../../entities/baseEntity.entity';
-import { Collection, Entity, ManyToMany, Property } from '@mikro-orm/core';
+import {
+  Collection,
+  Entity,
+  ManyToMany,
+  OneToOne,
+  Property,
+  Unique,
+} from '@mikro-orm/core';
 import { Pet } from '../../pet/entities/pet.entity';
+import { Image } from '../../s3/entities/image.entity';
 
 @Entity({ tableName: 'category' })
 export class Category extends BaseEntity {
+  @Unique({ name: 'category_name_unique' })
   @Property()
   category_name!: string;
 
   @ManyToMany(() => Pet, 'categories', { owner: true, nullable: true })
   pets = new Collection<Pet>(this);
+
+  @OneToOne(() => Image, (image) => image.category, {
+    owner: true,
+    orphanRemoval: true,
+  })
+  image: Image;
 }

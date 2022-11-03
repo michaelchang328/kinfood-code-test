@@ -1,6 +1,5 @@
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { Module } from '@nestjs/common';
-import { AuthModule } from '../auth/auth.module';
 import { S3Service } from '../s3/s3.service';
 import { Store } from './entities/store.entity';
 import { StoreController } from './store.controller';

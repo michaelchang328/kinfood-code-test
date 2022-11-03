@@ -9,6 +9,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthModule } from './auth/auth.module';
 import { StoreModule } from './store/store.module';
 import { PetModule } from './pet/pet.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { PetModule } from './pet/pet.module';
     AuthModule,
     StoreModule,
     PetModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [
